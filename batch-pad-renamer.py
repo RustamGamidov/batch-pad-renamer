@@ -33,7 +33,8 @@ if len(old_names) != len(new_names):
     exit(1)
 
 for oldname, newname in zip(old_names, new_names):
-    print oldname, ' = ', newname
-    os.rename(oldname, newname.strip('\n '))
+    if oldname != newname:
+        print oldname, ' = ', newname
+        os.rename(oldname, newname.strip('\n '))
 
 print 'Done'
