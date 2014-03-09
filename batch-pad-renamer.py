@@ -13,11 +13,10 @@ parser.add_argument('--path', '-p', action='store', dest='path', required=False,
                     default='./', help='Path to scan for files to rename.')
 global_args = parser.parse_args()
 
-
 old_names = os.listdir(global_args.path)
 old_names.sort()
 
-f = tempfile.NamedTemporaryFile(delete=True)
+f = tempfile.NamedTemporaryFile(suffix='.txt', delete=True)
 for item in old_names:
     f.write("%s\n" % item)
 f.flush()
