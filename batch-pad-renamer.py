@@ -31,9 +31,25 @@ if len(old_names) != len(new_names):
     print 'error: input-output files number mismatch'
     exit(1)
 
+lst_same = []
+lst_renamed  = []
+lst_errors = []
+lst_exists = []
+
 for oldname, newname in zip(old_names, new_names):
-    if oldname != newname:
-        print oldname, ' = ', newname
+    if oldname == newname:
+        lst_same.append(newname)
+    elif os.path_exists(newname):
+        lst_exists.append(newname)
+    else:
+        lst_renamed.append(oldname + ' => ' + newname)
         os.rename(oldname, newname.strip('\n '))
 
+print 'Renamed:'
+for i in lst_renamed:
+    print ' ', i
+print 'Exists:'
+for i in lst_exists:
+    print ' ', i
+print 'Same name: ', len(lst_same), ' Errors: ', len(lst_errors)
 print 'Done'
