@@ -39,7 +39,7 @@ lst_exists = []
 for oldname, newname in zip(old_names, new_names):
     if oldname == newname:
         lst_same.append(newname)
-    elif os.path_exists(newname):
+    elif os.path.exists(newname):
         lst_exists.append(newname)
     else:
         lst_renamed.append(oldname + ' => ' + newname)
