@@ -4,15 +4,15 @@ import os
 import tempfile
 import subprocess
 import argparse
-import unicodedata
-import string
 
 global_args = argparse.Namespace()
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--editor', '-e', action='store', dest='editor', required=False,
-                    default='$EDITOR', help='Text editor to modify filenames.')
-parser.add_argument('--path', '-p', action='store', dest='path', required=False,
-                    default='./', help='Path to scan for files to rename.')
+parser.add_argument('--editor', '-e', action='store', dest='editor',
+                    required=False, default='$EDITOR',
+                    help='Text editor to modify filenames.')
+parser.add_argument('--path', '-p', action='store', dest='path',
+                    required=False, default='./',
+                    help='Path to scan for files to rename.')
 global_args = parser.parse_args()
 
 
@@ -20,7 +20,7 @@ def validate_filename(filename):
     forbidden = ['?', ':']
     result = filename
     for ch in forbidden:
-        result = result.replace(ch,'.')
+        result = result.replace(ch, '.')
     return result
 
 
@@ -43,7 +43,7 @@ if len(old_names) != len(new_names):
     exit(1)
 
 lst_same = []
-lst_renamed  = []
+lst_renamed = []
 lst_errors = []
 lst_exists = []
 
