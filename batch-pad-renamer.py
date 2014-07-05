@@ -4,6 +4,8 @@ import os
 import tempfile
 import subprocess
 import argparse
+import unicodedata
+import string
 
 global_args = argparse.Namespace()
 parser = argparse.ArgumentParser(description='')
@@ -12,6 +14,15 @@ parser.add_argument('--editor', '-e', action='store', dest='editor', required=Fa
 parser.add_argument('--path', '-p', action='store', dest='path', required=False,
                     default='./', help='Path to scan for files to rename.')
 global_args = parser.parse_args()
+
+
+def validate_filename(filename):
+    forbidden = ['?', ':']
+    result = filename
+    for ch in forbidden:
+        result = result.replace(ch,'.')
+    return result
+
 
 old_names = os.listdir(global_args.path)
 old_names.sort()
@@ -42,6 +53,7 @@ for oldname, newname in zip(old_names, new_names):
     elif os.path.exists(newname):
         lst_exists.append(newname)
     else:
+        newname = validate_filename(newname)
         lst_renamed.append(oldname + ' => ' + newname)
         os.rename(oldname, newname.strip('\n '))
 

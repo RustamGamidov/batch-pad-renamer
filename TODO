@@ -5,3 +5,6 @@
  - Sequental number generator
  - Use default text editor if in GUI
  - Manage multitab text editors
+
+# Ideas
+ - use ':' or '%' as vars separators (this chars couldn't be used in filenames
