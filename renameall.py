@@ -74,10 +74,31 @@ if len(old_names) != len(new_names):
     print 'error: input-output files number mismatch'
     exit(1)
 
-lst_same = []
-lst_renamed = []
-lst_errors = []
-lst_exists = []
+
+class Collector(object):
+    def __init__(self, caption, color='yellow'):
+        self.caption = caption
+        self.lst = []
+        self.color = color
+
+    def append(self, str):
+        self.lst.append(str)
+
+    def echo(self, status, rollover=True):
+        result = status
+        if rollover and len(self.lst) > 0:
+            print colorize(self.caption, self.color)
+            for l in self.lst:
+                print ' ', l
+        else:
+            result += self.caption + ': ' + str(len(self.lst)) + '; '
+        return result
+
+
+lst_same = Collector('Same name')
+lst_renamed = Collector('Renamed')
+lst_errors = Collector('Errors', 'red')
+lst_exists = Collector('Exists')
 
 for oldname, newname in zip(old_names, new_names):
     if oldname == newname:
@@ -88,23 +109,16 @@ for oldname, newname in zip(old_names, new_names):
         newname = validate_filename(newname)
         lst_renamed.append(oldname + ' => ' + newname)
         if not global_args.dryrun:
-            os.rename(oldname, newname.strip('\n '))
+            try:
+                os.rename(oldname, newname.strip('\n '))
+            except:
+                lst_errors.append(oldname)
 
-
-def format_status(status, caption, lst, rollover=True):
-    result = status
-    if rollover and len(lst) > 0:
-        print colorize(caption, 'info')
-        for l in lst:
-            print ' ', l
-    else:
-        result += caption + ': ' + str(len(lst)) + '; '
-    return result
 
 status = ''
-status = format_status(status, 'Renamed', lst_renamed)
-status = format_status(status, 'Exists', lst_exists)
-status = format_status(status, 'Same name', lst_same, False)
-status = format_status(status, 'Errors', lst_errors)
+status = lst_renamed.echo(status)
+status = lst_exists.echo(status)
+status = lst_same.echo(status, False)
+status = lst_errors.echo(status)
 print status
 print 'Done'
