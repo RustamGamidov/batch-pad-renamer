@@ -13,6 +13,9 @@ parser.add_argument('--editor', '-e', action='store', dest='editor',
 parser.add_argument('--path', '-p', action='store', dest='path',
                     required=False, default='./',
                     help='Path to scan for files to rename.')
+parser.add_argument('--dry-run', '-d', dest='dryrun', action='store_true',
+                    default=False,
+                    help='Do not rename files. Just show new names.')
 global_args = parser.parse_args()
 
 
@@ -55,7 +58,8 @@ for oldname, newname in zip(old_names, new_names):
     else:
         newname = validate_filename(newname)
         lst_renamed.append(oldname + ' => ' + newname)
-        os.rename(oldname, newname.strip('\n '))
+        if not global_args.dryrun:
+            os.rename(oldname, newname.strip('\n '))
 
 print 'Renamed:'
 for i in lst_renamed:
