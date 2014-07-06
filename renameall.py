@@ -35,7 +35,8 @@ def colorize(val, color):
         'warn': colors['magenta'],
         'info': colors['yellow'],
         'ok': colors['green'],
-        'dark': colors['grey']
+        'dark': colors['grey'],
+        'highlight': colors['cyan']
     }
     result = str(val)
     if color in colors.keys():
@@ -89,11 +90,21 @@ for oldname, newname in zip(old_names, new_names):
         if not global_args.dryrun:
             os.rename(oldname, newname.strip('\n '))
 
-print colorize('Renamed:', 'info')
-for i in lst_renamed:
-    print ' ', i
-print colorize('Exists:', 'info')
-for i in lst_exists:
-    print ' ', i
-print colorize('Same name:', 'info'), len(lst_same), colorize('Errors:', 'info'), len(lst_errors)
+
+def format_status(status, caption, lst, rollover=True):
+    result = status
+    if rollover and len(lst) > 0:
+        print colorize(caption, 'info')
+        for l in lst:
+            print ' ', l
+    else:
+        result += caption + ': ' + str(len(lst)) + '; '
+    return result
+
+status = ''
+status = format_status(status, 'Renamed', lst_renamed)
+status = format_status(status, 'Exists', lst_exists)
+status = format_status(status, 'Same name', lst_same, False)
+status = format_status(status, 'Errors', lst_errors)
+print status
 print 'Done'
