@@ -19,6 +19,34 @@ parser.add_argument('--dry-run', '-d', dest='dryrun', action='store_true',
 global_args = parser.parse_args()
 
 
+def colorize(val, color):
+    colors = {
+        'cyan': '\033[96m',
+        'magenta': '\033[95m',
+        'blue': '\033[94m',
+        'yellow': '\033[93m',
+        'green': '\033[92m',
+        'red': '\033[91m',
+        'grey': '\033[90m',
+        'reset': '\033[0m'
+    }
+    roles = {
+        'error': colors['red'],
+        'warn': colors['magenta'],
+        'info': colors['yellow'],
+        'ok': colors['green'],
+        'dark': colors['grey']
+    }
+    result = str(val)
+    if color in colors.keys():
+        c = colors[color]
+    elif color in roles.keys():
+        c = roles[color]
+    if c:
+        result = c + result + colors['reset']
+    return result
+
+
 def validate_filename(filename):
     forbidden = ['?', ':']
     result = filename
@@ -61,11 +89,11 @@ for oldname, newname in zip(old_names, new_names):
         if not global_args.dryrun:
             os.rename(oldname, newname.strip('\n '))
 
-print 'Renamed:'
+print colorize('Renamed:', 'info')
 for i in lst_renamed:
     print ' ', i
-print 'Exists:'
+print colorize('Exists:', 'info')
 for i in lst_exists:
     print ' ', i
-print 'Same name: ', len(lst_same), ' Errors: ', len(lst_errors)
+print colorize('Same name:', 'info'), len(lst_same), colorize('Errors:', 'info'), len(lst_errors)
 print 'Done'
